@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:segundo_parcial/pages/administracion.dart';
 import 'package:segundo_parcial/pages/failedlogin.dart';
+import 'package:segundo_parcial/pages/ficha.dart';
 import 'package:segundo_parcial/pages/login.dart';
+import 'package:segundo_parcial/pages/reserva.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +32,9 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) => const LoginPage(),
         "/failed": (context) => const FailedLoginPage(),
+        "/administracion": (context) => const Administracion(),
+        "/ficha": (context) => const Ficha(),
+        "/reserva": (context) => const Reserva()
       },
     );
   }
