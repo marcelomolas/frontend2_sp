@@ -6,7 +6,13 @@ class Administracion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Administración'),
+        elevation: 5,
+      ),
+      body: Center(
+        child: Text('Administración'),
+      ),
     );
   }
 }
