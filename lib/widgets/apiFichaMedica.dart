@@ -2,25 +2,25 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:segundo_parcial/objects/persona.dart';
 import 'package:segundo_parcial/pages/mainpage.dart';
+import 'package:segundo_parcial/objects/ficha.dart';
 
 const String url = 'equipoyosh.com';
 
-class ApiCall extends StatefulWidget {
-  final String username;
+class ApiFichaMedica extends StatefulWidget {
 
-  const ApiCall({Key? key, required this.username}) : super(key: key);
+  const ApiFichaMedica() : super();
 
   @override
-  _ApiCallState createState() => _ApiCallState();
+  _ApiFichaMedicaState createState() => _ApiFichaMedicaState();
 }
 
-class _ApiCallState extends State<ApiCall> {
-  late Future apiCall;
+class _ApiFichaMedicaState extends State<ApiFichaMedica> {
+  late Future apiFichaMedica;
+
   @override
   void initState() {
-    apiCall = obtenerDatosAPI();
+    apiFichaMedica = getFichas();
     super.initState();
   }
 
@@ -29,7 +29,7 @@ class _ApiCallState extends State<ApiCall> {
     return Container(
       constraints: const BoxConstraints(maxHeight: 200, maxWidth: 400),
       child: FutureBuilder(
-        future: apiCall,
+        future: apiFichaMedica,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
@@ -48,40 +48,32 @@ class _ApiCallState extends State<ApiCall> {
     );
   }
 
-  Future obtenerDatosAPI() async {
+  Future getFichas() async {
     var res = await http
-        .get(Uri.https(url, "/stock-nutrinatalia/persona",
-            {"ejemplo": "{\"soloUsuariosDelSistema\": \"true\"}"}))
+        .get(Uri.https(url, "/stock-nutrinatalia/fichaClinica"))
         .timeout(const Duration(seconds: 5),
-            onTimeout: () =>
-                throw TimeoutException("Tiempo de espera agotado!"));
+        onTimeout: () =>
+        throw TimeoutException("Tiempo de espera agotado!"));
     print(res.statusCode);
     if (res.statusCode == 200) {
       var json = jsonDecode(res.body) as Map<String, dynamic>;
-      var personasjson = json["lista"];
-      List<Persona> personas = [];
-      for (var personajson in personasjson) {
-        personas.add(Persona.fromMap(personajson));
+      var fichasjson = json["lista"];
+      print(fichasjson);
+      List<Ficha> fichas = [];
+      for (var fichajson in fichasjson) {
+        fichas.add(Ficha.fromMap(fichajson));
       }
-      if (verificarUsuario(widget.username, personas)) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MainPage(username: widget.username)));
-      } else {
-        Navigator.pushReplacementNamed(context, "/failed");
-      }
+      /*Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MainPage(username: widget.username)));
+      */
+      return fichas;
     } else {
       throw Exception(
           "Error al hacer la llamada a la API. Código: ${res.statusCode}");
     }
   }
 
-  bool verificarUsuario(String username, List<Persona> personas) {
-    bool existe = false;
-    for (var persona in personas) {
-      if (persona.usuarioLogin == username) existe = true;
-    }
-    return existe;
-  }
 }
+
