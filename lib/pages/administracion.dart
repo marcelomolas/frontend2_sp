@@ -97,6 +97,8 @@ class _AdministracionState extends State<Administracion> {
         child: const Icon(Icons.add),
         backgroundColor: Colors.blue,
       ),
+      //floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
