@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:segundo_parcial/objects/ficha.dart';
+import 'package:segundo_parcial/widgets/apiFichaMedica.dart';
+import 'package:segundo_parcial/widgets/apiFichaMedicaFecha.dart';
 
 const String url = 'equipoyosh.com';
 
@@ -17,16 +19,22 @@ class FichaListadoPage extends StatefulWidget {
 }
 
 class _FichaPageState extends State<FichaListadoPage>{
+  final _fechaInicioKey = GlobalKey<FormState>();
+  final _dateIniciocontroller = TextEditingController();
+  final _fechaFinKey = GlobalKey<FormState>();
+  final _dateFincontroller = TextEditingController();
+  Widget encabezado = const Text("Consulta de fichas!");
 
-  List<String> data = [];
-  String _selectedLocation = '';
+  List<Ficha> data = [];
+  int _idFicha = 0;
 
   Future<String> getSWData() async {
     var resBody = await getFichas();
 
     setState(() {
-      data = _listFichas(resBody);
-      this._selectedLocation = data.first;
+      data = resBody;
+      print(data.first);
+      this._idFicha = data.first.idFicha!;
     });
 
     return "Sucess";
@@ -85,28 +93,110 @@ class _FichaPageState extends State<FichaListadoPage>{
             ],
           ),
         ),
-        body: Center(
-          child: DropdownButton(
-            items: data.map((location) {
-              return DropdownMenuItem(
-                child: new Text(location),
-                value: location,
-              );
-            }).toList(),
-            hint: Text('Please choose a text'), // Not necessary for Option 1
-            onChanged: (String? value) {
-              setState(() {
-                _selectedLocation = value!;
-              });
-            },
-            value: _selectedLocation,
-          ),
-        ),
+        body: Column(
+          children: [
+            encabezado,
+            Center(
+              child: DropdownButton(
+                items: data.map((location) {
+                  return DropdownMenuItem(
+                    child: new Text(location.observacion.toString()),
+                    value: location.idFicha,
+                  );
+                }).toList(),
+                hint: Text('Please choose a text'), // Not necessary for Option 1
+                onChanged: (int? value) {
+
+                  setState(() {
+                    _idFicha = value!;
+                  });
+                },
+                value: _idFicha,
+              ),
+            ),
+            Center(
+              child: DateInicioForm(
+                formKey: _fechaInicioKey,
+                controlador: _dateIniciocontroller,
+              ),
+            ),
+            Center(
+              child: DateFinForm(
+                formKey: _fechaFinKey,
+                controlador: _dateFincontroller,
+              ),
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  if (_fechaInicioKey.currentState!.validate() && _fechaFinKey.currentState!.validate()) {
+                    encabezado = ApiFichaMedicaFecha(fecha: _dateIniciocontroller.value.text + _dateFincontroller.value.text );
+
+                    setState(() {});
+                  }
+                },
+                child: const Text("Consultar"))
+          ],
+        )
     );
   }
 
 
 }
+
+
+class DateInicioForm extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final TextEditingController controlador;
+  const DateInicioForm(
+      {Key? key, required this.formKey, required this.controlador})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 300),
+      child: Form(
+        key: formKey,
+        child: TextFormField(
+          controller: controlador,
+          decoration: const InputDecoration(label: Text('Fecha Inicio')),
+          maxLength: 30,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'No podes dejar vacío este campo!';
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+class DateFinForm extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final TextEditingController controlador;
+  const DateFinForm(
+      {Key? key, required this.formKey, required this.controlador})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 300),
+      child: Form(
+        key: formKey,
+        child: TextFormField(
+          controller: controlador,
+          decoration: const InputDecoration(label: Text('Fecha Fin')),
+          maxLength: 30,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'No podes dejar vacío este campo!';
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
 
 List<Widget> _listFichasWidget(List<Ficha>data){
   List<Widget> fichas = [];

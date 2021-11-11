@@ -1,18 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:segundo_parcial/objects/persona.dart';
 
 class Ficha {
   int? idFicha;
   String? motivoConsulta;
   String? diagnostico;
   String? observacion;
+  Persona? idEmpleado;
+  Persona? idCliente;
 
   Ficha({
     this.idFicha,
     this.motivoConsulta,
     this.diagnostico,
     this.observacion,
+    this.idEmpleado,
+    this.idCliente,
   });
 
   Ficha copyWith({
@@ -20,12 +25,16 @@ class Ficha {
     String? motivoConsulta,
     String? diagnostico,
     String? observacion,
+    Persona? idEmpleado,
+    Persona? idCliente,
   }) {
     return Ficha(
       idFicha: idFicha ?? this.idFicha,
       motivoConsulta: motivoConsulta ?? this.motivoConsulta,
       diagnostico: diagnostico ?? this.diagnostico,
       observacion: observacion ?? this.observacion,
+      idEmpleado: idEmpleado ?? this.idEmpleado,
+      idCliente: idCliente ?? this.idCliente,
     );
   }
 
@@ -35,15 +44,19 @@ class Ficha {
       'motivoConsulta': this.motivoConsulta,
       'diagnostico': this.diagnostico,
       'observacion': this.observacion,
+      'idEmpleado': this.idEmpleado,
+      'idCliente': this.idCliente,
     };
   }
 
   factory Ficha.fromMap(Map<String, dynamic> map) {
     return Ficha(
-      idFicha: map['idFicha'],
+      idFicha: map['idFichaClinica'],
       motivoConsulta: map['motivoConsulta'],
       diagnostico: map['diagnostico'],
-      observacion: map['observacion']
+      observacion: map['observacion'],
+      idEmpleado: Persona.fromMap(map['idEmpleado']) ,
+      idCliente: Persona.fromMap(map['idCliente'])
     );
   }
 
@@ -54,7 +67,8 @@ class Ficha {
 
   @override
   String toString() {
-    return 'Ficha(idFicha: $idFicha, motivoConsulta: $motivoConsulta, diagnostico: $diagnostico, observacion: $observacion)';
+    return 'Ficha(idFicha: $idFicha, motivoConsulta: $motivoConsulta, diagnostico: $diagnostico, observacion: $observacion,'
+        'Fisioterapeuta: ${idEmpleado!.nombre}, Cliente: ${idCliente!.nombre})';
   }
 
   @override
@@ -65,7 +79,9 @@ class Ficha {
         other.idFicha == idFicha &&
         other.motivoConsulta == motivoConsulta &&
         other.motivoConsulta == motivoConsulta &&
-        other.observacion == observacion;
+        other.observacion == observacion &&
+        other.idEmpleado == idEmpleado &&
+        other.idCliente == idCliente;
   }
 
   @override
@@ -73,6 +89,8 @@ class Ficha {
     return idFicha.hashCode ^
     motivoConsulta.hashCode ^
     diagnostico.hashCode ^
-    observacion.hashCode;
+    observacion.hashCode ^
+    idEmpleado.hashCode ^
+    idCliente.hashCode;
   }
 }

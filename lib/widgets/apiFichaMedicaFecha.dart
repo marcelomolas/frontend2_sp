@@ -2,25 +2,27 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:segundo_parcial/pages/FichaListadoFecha.dart';
 import 'package:segundo_parcial/pages/mainpage.dart';
 import 'package:segundo_parcial/objects/ficha.dart';
 
 const String url = 'equipoyosh.com';
 
-class ApiFichaMedica extends StatefulWidget {
+class ApiFichaMedicaFecha extends StatefulWidget {
 
-  const ApiFichaMedica() : super();
+  final String fecha;
+
+  const ApiFichaMedicaFecha({Key? key, required this.fecha}) : super(key: key);
 
   @override
-  _ApiFichaMedicaState createState() => _ApiFichaMedicaState();
+  _ApiFichaMedicaFechaState createState() => _ApiFichaMedicaFechaState();
 }
 
-class _ApiFichaMedicaState extends State<ApiFichaMedica> {
-  late Future apiFichaMedica;
-
+class _ApiFichaMedicaFechaState extends State<ApiFichaMedicaFecha> {
+  late Future apiFichaMedicaFecha;
   @override
   void initState() {
-    apiFichaMedica = getFichas();
+    apiFichaMedicaFecha = getFichasFecha();
     super.initState();
   }
 
@@ -29,7 +31,7 @@ class _ApiFichaMedicaState extends State<ApiFichaMedica> {
     return Container(
       constraints: const BoxConstraints(maxHeight: 200, maxWidth: 400),
       child: FutureBuilder(
-        future: apiFichaMedica,
+        future: apiFichaMedicaFecha,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
@@ -69,6 +71,38 @@ class _ApiFichaMedicaState extends State<ApiFichaMedica> {
               builder: (context) => MainPage(username: widget.username)));
       */
       return fichas;
+    } else {
+      throw Exception(
+          "Error al hacer la llamada a la API. Código: ${res.statusCode}");
+    }
+  }
+
+  Future getFichasFecha() async {
+    var res = await http
+        .get(Uri.https(url, "/stock-nutrinatalia/fichaClinica",
+        {"ejemplo":"{\"fechaDesdeCadena\":${widget.fecha.substring(0,7)},\"fechaHastaCadena\": ${widget.fecha.substring(8,15)}}"}))
+        .timeout(const Duration(seconds: 25),
+        onTimeout: () =>
+        throw TimeoutException("Tiempo de espera agotado!"));
+    print(res.statusCode);
+    if (res.statusCode == 200) {
+      var json = jsonDecode(utf8.decode(res.bodyBytes));
+      var fichasjson = json["lista"];
+      print(fichasjson);
+      List<Ficha> fichas = [];
+      for (var fichajson in fichasjson) {
+        fichas.add(Ficha.fromMap(fichajson));
+      }
+      /*Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MainPage(username: widget.username)));
+      */
+
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => FichaListadoFecha(fichas: fichas)));
     } else {
       throw Exception(
           "Error al hacer la llamada a la API. Código: ${res.statusCode}");

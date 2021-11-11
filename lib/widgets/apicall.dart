@@ -18,7 +18,6 @@ class ApiCall extends StatefulWidget {
 
 class _ApiCallState extends State<ApiCall> {
   late Future apiCall;
-
   @override
   void initState() {
     apiCall = obtenerDatosAPI();
