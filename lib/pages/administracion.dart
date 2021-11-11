@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:segundo_parcial/objects/persona.dart';
+import 'package:segundo_parcial/widgets/deleteperson.dart';
 import 'package:segundo_parcial/widgets/listaPersonas.dart';
 
 class Administracion extends StatefulWidget {
@@ -79,10 +80,15 @@ class _AdministracionState extends State<Administracion> {
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                         IconButton(
                           icon: Icon(Icons.edit),
-                          onPressed: () => {},
+                          onPressed: () => {Navigator.pushNamed(context, "")},
                         ),
                         IconButton(
-                            icon: Icon(Icons.delete), onPressed: () => {})
+                            icon: Icon(Icons.delete),
+                            onPressed: () => {
+                                  setState(() {
+                                    //_futureAlbum = deletePersona(data[index].idPersona);
+                                  })
+                                }),
                       ]),
                     ),
                   );
@@ -93,6 +99,7 @@ class _AdministracionState extends State<Administracion> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Add your onPressed code here!
+          Navigator.pushNamed(context, "/addPersona");
         },
         child: const Icon(Icons.add),
         backgroundColor: Colors.blue,

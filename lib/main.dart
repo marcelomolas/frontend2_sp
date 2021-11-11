@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segundo_parcial/pages/addperson.dart';
 import 'package:segundo_parcial/pages/administracion.dart';
 import 'package:segundo_parcial/pages/failedlogin.dart';
 import 'package:segundo_parcial/pages/ficha.dart';
@@ -34,7 +35,8 @@ class MyApp extends StatelessWidget {
         "/failed": (context) => const FailedLoginPage(),
         "/administracion": (context) => const Administracion(),
         "/ficha": (context) => const Ficha(),
-        "/reserva": (context) => const Reserva()
+        "/reserva": (context) => const Reserva(),
+        "/addPersona": (context) => const AddPersona(),
       },
     );
   }
