@@ -90,6 +90,13 @@ class _AdministracionState extends State<Administracion> {
               );
             }),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        child: const Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      ),
     );
   }
 }
