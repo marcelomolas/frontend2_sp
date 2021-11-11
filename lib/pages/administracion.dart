@@ -56,7 +56,7 @@ class _AdministracionState extends State<Administracion> {
                           Column(
                             children: [
                               Text(
-                                'Cliente: ${data[index].nombre}, ${data[index].apellido}',
+                                'Cliente: ${data[index].apellido}, ${data[index].nombre}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600, fontSize: 16),
                               ),
